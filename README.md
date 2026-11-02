@@ -19,7 +19,7 @@ Python 3.14, Django 5.2, server-rendered templates, CSS/JavaScript and PostgreSQ
 
 ## One database for localhost and the hosted app
 
-The intended setup uses **the same Neon database for localhost and Vercel**. A change made through either app is visible through the other after a page refresh. Both need internet access; this is not offline synchronization.
+The deployed setup uses **the same Neon database for localhost and Vercel**. A change made through either app is visible through the other after a page refresh. Both need internet access; this is not offline synchronization.
 
 The original SQLite workspace has been transferred into Neon, preserving IDs, password hashes, requests, returns, repairs, history and notification read states. The local `db.sqlite3` and a verified backup remain private as the original source. Normal local startup now reads the pooled Neon URL from `.env.neon`; a connection failure does not silently switch back to SQLite.
 
@@ -99,7 +99,7 @@ The importer checks the export digest, allowed models, record counts and stock b
 
 The current local demo includes 12 equipment types, 12 requests, 8 complaints, returns, inquiries and 6 accounts, including one awaiting approval. Shared demo users can change sample records; there is no automatic reset. Future GitHub pushes update code, not data. Apply new schema migrations deliberately to Neon before deploying code that depends on them.
 
-Neon is connected and the initial cloud transfer is complete. Pooled/direct connections, exact imported record contents, stock/return balances, all three demo credentials and ID sequences have been verified. Successful Vercel deployment and the live URL remain to be checked. Free plans have quotas and may have cold starts. A real college installation must use private accounts and disable public demo credentials.
+Neon is connected and the initial cloud transfer is complete. Pooled/direct connections, exact imported record contents, stock/return balances, all three demo credentials and ID sequences have been verified. The live application is available at https://lidms.vercel.app/. All three role logins and populated workspace pages have been checked on Vercel. Free plans have quotas and may have cold starts. A real college installation must use private accounts and disable public demo credentials.
 
 ## Verification
 
@@ -115,7 +115,7 @@ Run tests explicitly against SQLite so they do not access the shared live databa
 .\.venv\Scripts\python.exe tools/verify_ui.py
 ```
 
-The browser verifier uses an isolated SQLite snapshot and saves screenshots outside Git. Environment and transfer tests cover shared connection selection, exact record restoration, password/read-state preservation, nonempty-target refusal and rollback. The actual Neon import and integrity checks have passed; Vercel live-URL checks and concurrency stress testing remain pending.
+The browser verifier uses an isolated SQLite snapshot and saves screenshots in ignored `test-results/screenshots/`. Environment and transfer tests cover shared connection selection, exact record restoration, password/read-state preservation, nonempty-target refusal and rollback. The actual Neon import and integrity checks have passed. Live checks covered all three role logins, administrator-only access restrictions, populated workspace pages, five responsive homepage widths, assets, role tabs, demo-credential copying, both report views, three CSV exports and logout. No JavaScript errors were recorded. Concurrent-write stress testing remains outside these checks.
 
 ## Structure
 
@@ -138,12 +138,12 @@ LIDMS_Code/                  # Git repository root
 `-- vercel.json
 ```
 
-Private case study, project details, previews and original-source archives remain in the sibling `Documentation` directory, outside Git. Unused original imagery has been removed from the application after archive verification.
+Private case study, project details, academic material and the original-source archive remain in the sibling `Documentation` directory, outside Git. Obsolete design previews were removed; future verification screenshots go to ignored `test-results/screenshots/`. Unused original imagery has been removed from the application after archive verification.
 
 ## Limitations and links
 
-Historical-data migration and successful Vercel live-URL verification remain pending. The current fictional workspace has already been imported into Neon. Password recovery is administrator-assisted. Contact messages are stored for administrators; email delivery is not configured. Completely disconnected offline edits are not synchronized.
+Historical-data migration and concurrent-write stress testing remain pending. The current fictional workspace has already been imported into Neon. Password recovery is administrator-assisted. Contact messages are stored for administrators; email delivery is not configured. Completely disconnected offline edits are not synchronized.
 
-[GitHub Repository](https://github.com/mayurbohraa/LIDMS) | Live Demo: deployment pending.
+[Live Demo](https://lidms.vercel.app/) | [GitHub Repository](https://github.com/mayurbohraa/LIDMS)
 
 No application license has been selected. The Mulish font retains its SIL Open Font License in `static/fonts/OFL.txt`.
