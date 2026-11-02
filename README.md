@@ -21,7 +21,7 @@ Python 3.14, Django 5.2, server-rendered templates, CSS/JavaScript and PostgreSQ
 
 The intended setup uses **the same Neon database for localhost and Vercel**. A change made through either app is visible through the other after a page refresh. Both need internet access; this is not offline synchronization.
 
-Before Neon is connected, the existing records remain in the ignored local `db.sqlite3`. They will be transferred once into an empty Neon database, preserving IDs, password hashes, requests, returns, repairs, history and notification read states. After connection, normal local startup automatically reads the pooled Neon URL from `.env.neon`. A connection failure does not silently switch back to SQLite.
+The original SQLite workspace has been transferred into Neon, preserving IDs, password hashes, requests, returns, repairs, history and notification read states. The local `db.sqlite3` and a verified backup remain private as the original source. Normal local startup now reads the pooled Neon URL from `.env.neon`; a connection failure does not silently switch back to SQLite.
 
 The old `lidms.sql` backup is separate historical material and has not been imported. GitHub contains source and migration commands, never database records or credentials.
 
@@ -71,6 +71,8 @@ Never import `.env.local` into Vercel. Import `.env.vercel` for Production; Neon
 
 ## Connect Neon, transfer once, then deploy
 
+The current workspace has already completed this initial transfer. The procedure below is retained for a fresh installation; do not import again into the populated shared database.
+
 1. Use the existing Vercel project linked to `mayurbohraa/LIDMS`, or import it using the **Django** preset and Root Directory `./`. A failed first build does not prevent linking a database.
 2. Import the private `.env.vercel` under the project's **Settings > Environment Variables**, selecting **Production**.
 3. In **Storage / Marketplace**, connect **Neon PostgreSQL**, selecting the **Free** plan if available. Django already handles authentication; Neon Auth and Realtime are not needed. Connect the database to this Vercel project's Production environment.
@@ -97,7 +99,7 @@ The importer checks the export digest, allowed models, record counts and stock b
 
 The current local demo includes 12 equipment types, 12 requests, 8 complaints, returns, inquiries and 6 accounts, including one awaiting approval. Shared demo users can change sample records; there is no automatic reset. Future GitHub pushes update code, not data. Apply new schema migrations deliberately to Neon before deploying code that depends on them.
 
-Neon is not connected yet and the cloud transfer has not run. Free plans have quotas and may have cold starts. A real college installation must use private accounts and disable public demo credentials.
+Neon is connected and the initial cloud transfer is complete. Pooled/direct connections, exact imported record contents, stock/return balances, all three demo credentials and ID sequences have been verified. Successful Vercel deployment and the live URL remain to be checked. Free plans have quotas and may have cold starts. A real college installation must use private accounts and disable public demo credentials.
 
 ## Verification
 
@@ -113,7 +115,7 @@ Run tests explicitly against SQLite so they do not access the shared live databa
 .\.venv\Scripts\python.exe tools/verify_ui.py
 ```
 
-The browser verifier uses an isolated SQLite snapshot and saves screenshots outside Git. Environment and transfer tests cover shared connection selection, exact record restoration, password/read-state preservation, nonempty-target refusal and rollback. Actual Neon/PostgreSQL verification remains pending connection.
+The browser verifier uses an isolated SQLite snapshot and saves screenshots outside Git. Environment and transfer tests cover shared connection selection, exact record restoration, password/read-state preservation, nonempty-target refusal and rollback. The actual Neon import and integrity checks have passed; Vercel live-URL checks and concurrency stress testing remain pending.
 
 ## Structure
 
@@ -140,7 +142,7 @@ Private case study, project details, previews and original-source archives remai
 
 ## Limitations and links
 
-Historical-data migration, actual Neon verification and successful Vercel deployment remain pending. Password recovery is administrator-assisted. Contact messages are stored for administrators; email delivery is not configured. Completely disconnected offline edits are not synchronized.
+Historical-data migration and successful Vercel live-URL verification remain pending. The current fictional workspace has already been imported into Neon. Password recovery is administrator-assisted. Contact messages are stored for administrators; email delivery is not configured. Completely disconnected offline edits are not synchronized.
 
 [GitHub Repository](https://github.com/mayurbohraa/LIDMS) | Live Demo: deployment pending.
 
