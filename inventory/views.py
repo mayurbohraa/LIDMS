@@ -374,8 +374,13 @@ def dashboard(request):
     activity = Activity.objects.select_related("actor")
     if role != "admin":
         activity = activity.filter(actor=request.user)
+    progress_complaints = (
+        complaints.filter(assigned_to=request.user) if role == "technician" else complaints
+    )
     status_counts = dict(
-        complaints.values("status").annotate(total=Count("pk")).values_list("status", "total")
+        progress_complaints.values("status")
+        .annotate(total=Count("pk"))
+        .values_list("status", "total")
     )
     total_complaints = sum(status_counts.values())
     breakdown = [

@@ -148,6 +148,29 @@ class DemoLoginTests(TestCase):
     STORAGES={"staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}}
 )
 class WorkflowTests(TestCase):
+    def test_technician_progress_counts_assigned_jobs_not_all_self_reported_issues(self):
+        Complaint.objects.create(
+            reporter=self.technician,
+            subject="Own issue awaiting assignment",
+            laboratory="Lab B",
+            description="Awaiting technician allocation",
+            status="in_progress",
+        )
+        Complaint.objects.create(
+            reporter=self.other,
+            assigned_to=self.technician,
+            subject="Completed assigned job",
+            laboratory="Lab B",
+            description="Repair example",
+            status="resolved",
+            resolution="Cable replaced and tested.",
+        )
+        self.client.force_login(self.technician)
+        response = self.client.get(reverse("dashboard"))
+        self.assertEqual(response.context["complaint_total"], 2)
+        counts = {stage["status"]: stage["count"] for stage in response.context["breakdown"]}
+        self.assertEqual(counts, {"open": 1, "in_progress": 0, "resolved": 1})
+
     def test_profile_name_updates_header_without_changing_account_access(self):
         self.client.force_login(self.faculty)
         response = self.client.post(
@@ -269,7 +292,7 @@ class WorkflowTests(TestCase):
             "Contact Us",
         ]:
             self.assertContains(response, label)
-        self.assertContains(response, "brand/logo.png")
+        self.assertContains(response, "Redmask/logo.png")
         for copied_content in [
             "Live status",
             "Today’s activity",

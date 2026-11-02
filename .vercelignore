@@ -7,3 +7,5 @@ __pycache__/
 requirements-dev.txt
 inventory/tests.py
 tools/
+local-data/
+staticfiles/

@@ -7,7 +7,7 @@
 {% block public_header %}
 <header class="campus-header" data-campus-header>
   <div class="campus-header-inner">
-    <a class="campus-brand" href="{% url 'home' %}" aria-label="LIDMS home"><img src="{% static 'brand/logo.png' %}" alt="" width="44" height="44"><span>LIDMS</span></a>
+    <a class="campus-brand" href="{% url 'home' %}" aria-label="LIDMS home"><img src="{% static 'Redmask/logo.png' %}" alt="" width="44" height="44"><span>LIDMS</span></a>
     <nav class="campus-navigation" id="campus-navigation" aria-label="Main navigation"><a href="#about">About</a><a href="#services">Features</a><a href="#roles">Roles</a><a href="#faq">FAQs</a></nav>
     <div class="campus-header-actions"><a class="campus-button campus-button-small" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">{% if user.is_authenticated %}Dashboard{% else %}Log in{% endif %}<span aria-hidden="true">↗</span></a><button class="campus-menu" data-campus-menu type="button" aria-controls="campus-navigation" aria-expanded="false" aria-label="Open navigation"><span></span><span></span></button></div>
   </div>
@@ -15,7 +15,7 @@
 {% endblock %}
 {% block public_content %}
 <section class="campus-hero" id="home">
-  <div class="campus-container campus-hero-grid"><div class="campus-hero-copy"><h1>The whole lab.<br><span>One workspace.</span></h1><p class="campus-hero-description">Equipment, people and maintenance, kept in sync.</p><div class="campus-hero-actions"><a class="campus-button" href="#about">Explore LIDMS <span aria-hidden="true">↓</span></a></div></div><div class="hero-brand-art"><img src="{% static 'brand/hero-mascot.png' %}" alt="Friendly LIDMS robot mascot waving" width="360" height="360"><p class="hero-handwritten">Same equipment.<br>Better organised<br>labs.<span aria-hidden="true"></span></p></div></div>
+  <div class="campus-container campus-hero-grid"><div class="campus-hero-copy"><h1>The whole lab.<br><span>One workspace.</span></h1><p class="campus-hero-description">Equipment, people and maintenance, kept in sync.</p><div class="campus-hero-actions"><a class="campus-button" href="#about">Explore LIDMS <span aria-hidden="true">↓</span></a></div></div><div class="hero-brand-art"><img src="{% static 'Redmask/hero-mascot.png' %}" alt="Friendly LIDMS robot mascot waving" width="360" height="360"><p class="hero-handwritten">Same equipment.<br>Better organised<br>labs.<span aria-hidden="true"></span></p></div></div>
   <div class="campus-container dashboard-showcase"><div class="dashboard-showcase-frame"><a class="dashboard-preview-open" data-preview-open href="{% static 'project/dashboard-admin.jpg' %}" target="_blank" rel="noopener" aria-label="Enlarge Administrator dashboard preview"><img id="dashboard-preview-image" src="{% static 'project/dashboard-admin.jpg' %}" width="1440" height="960" alt="Actual LIDMS Administrator dashboard with local demonstration data" fetchpriority="high"><span class="dashboard-enlarge">View dashboard <span aria-hidden="true">↗</span></span></a></div></div>
 </section>
 <dialog class="dashboard-lightbox" data-dashboard-dialog aria-labelledby="dashboard-dialog-title"><div class="dashboard-lightbox-heading"><h2 id="dashboard-dialog-title">Administrator dashboard</h2><div class="dashboard-dialog-actions"><button type="button" data-zoom-dashboard aria-pressed="false">Zoom in</button><button type="button" data-close-dashboard aria-label="Close dashboard preview">Close <span aria-hidden="true">×</span></button></div></div><p>Actual LIDMS application with local demonstration data.</p><div class="dashboard-lightbox-image-area" role="region" aria-label="Dashboard screenshot" tabindex="0"><img data-dialog-image src="{% static 'project/dashboard-admin.jpg' %}" alt="Full Administrator dashboard preview" width="1440" height="960"></div></dialog>
@@ -36,5 +36,5 @@
 </section>
 {% endblock %}
 {% block public_footer %}
-<footer class="campus-footer"><div class="campus-container campus-footer-inner"><a class="campus-brand" href="#home"><img src="{% static 'brand/logo.png' %}" alt="LIDMS 2D robot logo" width="36" height="36"><span>LIDMS</span></a><p>Lab Information Digitalization and Management Systems</p><span class="campus-copyright">© {% now 'Y' %} LIDMS</span></div></footer>
+<footer class="campus-footer"><div class="campus-container campus-footer-inner"><a class="campus-brand" href="#home"><img src="{% static 'Redmask/logo.png' %}" alt="LIDMS 2D robot logo" width="36" height="36"><span>LIDMS</span></a><p>Lab Information Digitalization and Management Systems</p><span class="campus-copyright">© {% now 'Y' %} LIDMS</span></div></footer>
 {% endblock %}

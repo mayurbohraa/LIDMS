@@ -5,7 +5,7 @@
 {% block layout %}
 <main id="main" class="login-layout"><div class="login-stack">{% include 'partials/messages.html' %}
 <section class="panel login-card">
-<a href="{% url 'home' %}" class="login-brand" aria-label="LIDMS homepage"><img class="project-robot" src="{% static 'brand/logo.png' %}" alt="LIDMS 2D robot logo"><span>LIDMS</span></a>
+<a href="{% url 'home' %}" class="login-brand" aria-label="LIDMS homepage"><img class="project-robot" src="{% static 'Redmask/logo.png' %}" alt="LIDMS 2D robot logo"><span>LIDMS</span></a>
 <h1>Login</h1><p class="login-intro">Lab Information Digitalization and Management Systems</p>
 <form method="post">{% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
 {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}

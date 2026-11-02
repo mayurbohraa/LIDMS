@@ -131,14 +131,15 @@ def verify_role_workflow(browser, password, checks):
 
 def verify_browser():
     load_dotenv(ROOT / ".env.local")
+    os.environ["LIDMS_ENV_FILE"] = str(ROOT / ".env.local")
     password = os.environ["LIDMS_DEMO_PASSWORD"]
     PREVIEWS.mkdir(parents=True, exist_ok=True)
     RESULTS.mkdir(exist_ok=True)
     checks = []
     errors = []
-    logo = ROOT / "static/brand/logo.png"
+    logo = ROOT / "static/Redmask/logo.png"
     assert logo.read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
-    assert not (ROOT / "static/brand/robot.svg").exists()
+    assert not (ROOT / "static/Redmask/robot.svg").exists()
     checks.append(
         "New front-facing 2D robot logo present; retired logo removed from application assets"
     )
@@ -167,9 +168,9 @@ def verify_browser():
             == "#about"
         )
         assert page.locator(".campus-brand img").evaluate_all(
-            "images => images.every(image => image.getAttribute('src').endsWith('/brand/logo.png'))"
+            "images => images.every(image => image.getAttribute('src').endsWith('/Redmask/logo.png'))"
         )
-        assert page.locator("link[rel=icon]").get_attribute("href").endswith("/brand/logo.png")
+        assert page.locator("link[rel=icon]").get_attribute("href").endswith("/Redmask/logo.png")
         assert page.title() == "LIDMS | Lab Information Digitalization and Management Systems"
         assert page.locator(".campus-footer a[href*='github']").count() == 0
         assert (

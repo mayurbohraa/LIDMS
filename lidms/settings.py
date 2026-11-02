@@ -1,4 +1,4 @@
-"""Local SQLite development; persistent PostgreSQL is mandatory on Vercel."""
+"""SQLite before connection; one shared Neon database for local and hosted use."""
 
 import os
 from pathlib import Path
@@ -6,7 +6,10 @@ from pathlib import Path
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 
+from .environment import load_environment
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_environment(BASE_DIR)
 ON_VERCEL = os.getenv("VERCEL") == "1"
 DEBUG = os.getenv("DJANGO_DEBUG", "false" if ON_VERCEL else "true").lower() == "true"
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "")
@@ -28,6 +31,9 @@ for key in ("VERCEL_URL", "VERCEL_PROJECT_PRODUCTION_URL"):
 CSRF_TRUSTED_ORIGINS = [
     v.strip() for v in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if v.strip()
 ]
+for key in ("VERCEL_URL", "VERCEL_PROJECT_PRODUCTION_URL"):
+    if os.getenv(key):
+        CSRF_TRUSTED_ORIGINS.append("https://" + os.environ[key])
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -67,7 +73,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "lidms.wsgi.application"
 ASGI_APPLICATION = "lidms.asgi.application"
 database_url = os.getenv("DATABASE_URL", "")
-if ON_VERCEL and not database_url:
+if (ON_VERCEL or os.getenv("LIDMS_REQUIRE_POSTGRES") == "true") and not database_url:
     raise ImproperlyConfigured("Connect a PostgreSQL database and set DATABASE_URL on Vercel.")
 DATABASES = {
     "default": dj_database_url.parse(
@@ -81,6 +87,8 @@ DATABASES = {
 }
 if ON_VERCEL and DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":
     raise ImproperlyConfigured("Vercel requires a persistent PostgreSQL DATABASE_URL.")
+if database_url and DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":
+    raise ImproperlyConfigured("DATABASE_URL must be a PostgreSQL connection string.")
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},

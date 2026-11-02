@@ -5,7 +5,7 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#363740">
   <title>{% block page_title %}{{ title|default:'Workspace' }} | LIDMS - Lab Information Digitalization and Management Systems{% endblock %}</title>
-  <link rel="icon" href="{% static 'brand/logo.png' %}">
+  <link rel="icon" href="{% static 'Redmask/logo.png' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <link rel="stylesheet" href="{% static 'css/figma.css' %}">
   <link rel="stylesheet" href="{% static 'css/project.css' %}">
@@ -17,7 +17,7 @@
 {% block layout %}
 <div class="workspace">
   <aside class="sidebar" id="navigation" aria-label="LIDMS navigation">
-    <a class="brand project-brand" href="{% url 'dashboard' %}"><img src="{% static 'brand/logo.png' %}" alt="LIDMS 2D robot logo"><span>LIDMS</span></a>
+    <a class="brand project-brand" href="{% url 'dashboard' %}"><img src="{% static 'Redmask/logo.png' %}" alt="LIDMS 2D robot logo"><span>LIDMS</span></a>
     <nav class="nav-links">
       <a href="{% url 'dashboard' %}" {% if section == 'dashboard' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/dashboard.png' %}" alt="">Dashboard</a>
       {% if is_administrator %}<a href="{% url 'new_registration' %}" {% if section == 'registration' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/registration.png' %}" alt="">New Registration</a>{% endif %}
