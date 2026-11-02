@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#363740">
+  <title>{% block page_title %}{{ title|default:'Workspace' }} | LIDMS - Lab Information Digitalization and Management Systems{% endblock %}</title>
+  <link rel="icon" href="{% static 'brand/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/figma.css' %}">
+  <link rel="stylesheet" href="{% static 'css/project.css' %}">
+  {% block extra_css %}{% endblock %}
+  <script src="{% static 'js/app.js' %}" defer></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<a class="skip-link" href="#main">Skip to content</a>
+{% block layout %}
+<div class="workspace">
+  <aside class="sidebar" id="navigation" aria-label="LIDMS navigation">
+    <a class="brand project-brand" href="{% url 'dashboard' %}"><img src="{% static 'brand/logo.png' %}" alt="LIDMS 2D robot logo"><span>LIDMS</span></a>
+    <nav class="nav-links">
+      <a href="{% url 'dashboard' %}" {% if section == 'dashboard' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/dashboard.png' %}" alt="">Dashboard</a>
+      {% if is_administrator %}<a href="{% url 'new_registration' %}" {% if section == 'registration' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/registration.png' %}" alt="">New Registration</a>{% endif %}
+      <a href="{% url 'stock_manager' %}" {% if section == 'inventory' or section == 'requests' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/stock.png' %}" alt="">Stock Manager</a>
+      {% if is_administrator %}<a href="{% url 'users' %}" {% if section == 'users' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/users.png' %}" alt="">User Details</a>{% endif %}
+      <a href="{% url 'complaint_create' %}" {% if section == 'complaints' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/request.png' %}" alt="">Post Complaint</a>
+      <a href="{% url 'request_create' %}" {% if section == 'post_request' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/request.png' %}" alt="">Post Stock Request</a>
+      <a href="{% url 'reports' %}" {% if section == 'reports' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/reports.png' %}" alt="">Reports</a>
+    </nav>
+    <nav class="sidebar-bottom" aria-label="Support">
+      <a href="{% url 'faq' %}" {% if section == 'faq' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/faq.png' %}" alt="">FAQs</a>
+      <a href="{% url 'contact' %}" {% if section == 'contact' %}aria-current="page"{% endif %}><img src="{% static 'project-icons/contact.png' %}" alt="">Contact Us</a>
+    </nav>
+  </aside>
+  <div class="workspace-body">
+    <header class="topbar">
+      <div class="topbar-left"><button class="menu-toggle" type="button" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">☰</button><h1 class="topbar-title">{{ title }}</h1></div>
+      <div class="topbar-right">
+        <a class="updates-link" href="{% url 'notifications' %}" aria-label="Notifications{% if unread_notifications %}, {{ unread_notifications }} unread{% endif %}"><svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span class="notifications-label">Notifications</span>{% if unread_notifications %}<span class="unread-count">{{ unread_notifications }}</span>{% endif %}</a>
+        <details class="account-menu"><summary aria-label="Account menu for {{ account_name }}"><span class="header-name">{{ account_name }}</span><span class="avatar" aria-hidden="true">{{ account_initials }}</span></summary><div class="account-dropdown"><div class="account-identity"><strong>{{ account_name }}</strong><span>{{ user.email }}</span><small>{{ account_role }}</small></div><a href="{% url 'profile' %}"><svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>My profile</a><form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit"><svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H4V3h5M14 7l5 5-5 5M8 12h13"/></svg>Log out</button></form></div></details>
+      </div>
+    </header>
+    <main class="main" id="main">{% include 'partials/messages.html' %}{% block content %}{% endblock %}<footer class="page-footer">Lab Information Digitalization and Management Systems · LIDMS</footer></main>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}{% endblock %}
+</body></html>

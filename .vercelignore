@@ -1,0 +1,9 @@
+.venv/
+.git/
+.env*
+db.sqlite3*
+test-results/
+__pycache__/
+requirements-dev.txt
+inventory/tests.py
+tools/

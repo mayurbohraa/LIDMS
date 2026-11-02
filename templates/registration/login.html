@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block page_title %}Login | LIDMS - Lab Information Digitalization and Management Systems{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/login.css' %}">{% endblock %}
+{% block layout %}
+<main id="main" class="login-layout"><div class="login-stack">{% include 'partials/messages.html' %}
+<section class="panel login-card">
+<a href="{% url 'home' %}" class="login-brand" aria-label="LIDMS homepage"><img class="project-robot" src="{% static 'brand/logo.png' %}" alt="LIDMS 2D robot logo"><span>LIDMS</span></a>
+<h1>Login</h1><p class="login-intro">Lab Information Digitalization and Management Systems</p>
+<form method="post">{% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+{% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+<div class="field"><label for="id_username">Email ID</label>{{ form.username }}{{ form.username.errors }}</div>
+<div class="field"><label for="id_password">Password</label><div class="password-input">{{ form.password }}<button type="button" class="password-toggle" aria-label="Show password" aria-pressed="false">Show</button></div>{{ form.password.errors }}</div>
+<button class="button full-width" type="submit">Login</button>
+</form>
+{% if demo_accounts %}<button hidden class="demo-open" type="button" aria-haspopup="dialog" aria-controls="demo-dialog">Demo account credentials</button>{% endif %}
+<p class="login-signup">For login credentials, contact the <a class="text-link" href="{% url 'contact' %}">lab administrator</a>.</p>
+</section>
+{% if demo_accounts %}
+<dialog id="demo-dialog" class="demo-dialog" aria-labelledby="demo-title">
+<div class="demo-heading"><h2 id="demo-title">Demo account credentials</h2><button type="button" class="demo-close" aria-label="Close demo credentials" autofocus>×</button></div>
+<div class="demo-accounts">
+{% for account in demo_accounts %}
+<section class="demo-account" aria-labelledby="demo-{{ account.role }}">
+<h3 id="demo-{{ account.role }}">{{ account.label }}</h3>
+<div class="demo-copy-row"><code id="demo-email-{{ account.role }}">{{ account.email }}</code><button type="button" class="demo-copy" data-copy-target="demo-email-{{ account.role }}" aria-label="Copy {{ account.label }} email">Copy</button></div>
+</section>
+{% endfor %}
+</div>
+<div class="demo-password"><span class="demo-password-label">Password · all accounts</span><div class="demo-copy-row"><code id="demo-password">{{ demo_password }}</code><button type="button" class="demo-copy" data-copy-target="demo-password" aria-label="Copy demo password">Copy</button></div></div>
+<p class="demo-status" role="status" aria-live="polite" aria-atomic="true"></p>
+</dialog>
+{% endif %}
+</div></main>{% endblock %}
+{% block extra_js %}{% if demo_accounts %}<script src="{% static 'js/demo-login.js' %}" defer></script>{% endif %}{% endblock %}

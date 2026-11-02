@@ -1,0 +1,28 @@
+.login-layout { grid-template-columns: minmax(0, 1fr); }
+.login-stack { width: 100%; max-width: 380px; min-width: 0; }
+.demo-open { display: block; width: 100%; margin-top: 16px; padding: 11px 14px; border: 1px solid #b9e8da; border-radius: 7px; background: #eef9f5; color: #086c5a; font-size: 13px; font-weight: 700; }
+.demo-open[hidden] { display: none; }
+.demo-open:hover, .demo-copy:hover { background: #d7f2e8; }
+.demo-dialog { width: min(400px, calc(100% - 32px)); padding: 20px; border: 1px solid #e2e5ec; border-radius: 12px; background: #fff; color: var(--ink); box-shadow: 0 20px 70px #0004; }
+.demo-dialog::backdrop { background: #161d26a6; }
+.demo-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.demo-heading h2 { margin: 0; font-size: 17px; }
+.demo-close { flex-shrink: 0; margin-left: auto; width: 32px; height: 32px; padding: 0; background: transparent; border: 0; border-radius: 5px; font-size: 25px; color: #626779; line-height: 1; }
+.demo-close:hover { background: #f2f4f8; }
+.demo-account { padding: 8px 0; border-bottom: 1px solid var(--line); }
+.demo-account h3, .demo-password-label { display: block; font-size: 12px; font-weight: 700; margin: 0 0 4px; }
+.demo-copy-row { display: flex; align-items: center; gap: 10px; }
+.demo-copy-row code { min-width: 0; overflow-wrap: anywhere; font-size: 12px; line-height: 1.6; }
+.demo-copy { flex-shrink: 0; margin-left: auto; min-height: 32px; padding: 5px 9px; border: 1px solid #b9e8da; border-radius: 5px; background: #eef9f5; color: #086c5a; font-size: 11px; font-weight: 700; }
+.demo-password { padding-top: 14px; }
+.demo-status { font-size: 11px; line-height: 1.4; min-height: 16px; color: #086c5a; margin: 10px 0 0; }
+body.demo-modal-open { overflow: hidden; }
+@media (max-width: 360px), (max-height: 480px) {
+  .demo-dialog { padding: 16px; }
+  .demo-heading { margin-bottom: 6px; }
+  .demo-heading h2 { font-size: 15px; }
+  .demo-account { padding: 4px 0; }
+  .demo-copy { min-height: 30px; padding: 4px 9px; }
+  .demo-password { padding-top: 10px; }
+  .demo-status { margin-top: 6px; }
+}

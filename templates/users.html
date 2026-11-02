@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading"><p>Registered users and their account details.</p><a class="button" href="{% url 'new_registration' %}">New Registration</a></div>
+<section class="panel"><form class="filter-bar" method="get"><label class="sr-only" for="people-search">Search users</label><input type="search" id="people-search" name="q" value="{{ query }}" placeholder="Search users…"><button class="button secondary" type="submit">Search</button></form>
+<div class="table-scroll"><table class="users-table"><caption class="sr-only">User Details</caption><thead><tr><th>RegID</th><th>Name</th><th>Email ID</th><th>Department</th><th>Mobile</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+{% for person in page_obj %}<tr><td>{{ person.pk }}</td><td>{{ person.get_full_name|default:person.username }}<small>{% if person.is_superuser %}Admin{% else %}{{ person.profile.get_role_display|default:'Faculty' }}{% endif %}</small></td><td>{{ person.email }}</td><td>{{ person.profile.department|default:'-' }}</td><td>{{ person.profile.phone|default:'-' }}</td><td><span class="badge {% if person.is_active %}approved{% else %}pending{% endif %}">{% if person.is_active %}Active{% else %}Inactive{% endif %}</span></td><td><div class="row-actions"><a class="action-button" href="{% url 'user_access' person.pk %}">Manage</a></div></td></tr>{% empty %}<tr><td colspan="7"><div class="empty">No user details found.</div></td></tr>{% endfor %}
+</tbody></table></div>{% include 'partials/pagination.html' %}</section>{% endblock %}

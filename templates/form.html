@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
+<a class="back-link" href="{% url back_url %}">← Back</a><div class="page-heading"><div><h1>{{ title }}</h1>{% if subtitle %}<p>{{ subtitle }}</p>{% endif %}</div></div>
+<section class="panel form-panel {{ form_variant }}">{% if detail %}<div class="detail-note">{{ detail|linebreaksbr }}</div>{% endif %}<form method="post" class="editor-form">{% csrf_token %}{% include 'partials/fields.html' %}<div class="form-actions"><a class="button secondary" href="{% url back_url %}">Cancel</a><button class="button" type="submit">{{ submit_label|default:'Save changes' }}</button></div></form></section>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}<div class="project-options">
+<a class="panel option-card" href="{% url 'inventory' %}"><span aria-hidden="true">▦</span><h2>Show Stock Details</h2></a>
+<a class="panel option-card" href="{% url 'requests' %}"><span aria-hidden="true">⇄</span><h2>New Stock Requests</h2></a>
+<a class="panel option-card" href="{% url 'loans' %}"><span aria-hidden="true">↩</span><h2>Issued Equipment &amp; Returns</h2></a>
+</div>{% endblock %}
