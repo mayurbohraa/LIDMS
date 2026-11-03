@@ -6,7 +6,7 @@
 
 ## About
 
-LIDMS is a college minor project designed and developed independently by Mayur Bohra. It brings laboratory equipment, stock requests, borrowing and maintenance into one role-based web application. Administrators review requests and manage access, faculty request equipment and report issues, and technicians handle repairs and returns.
+LIDMS is a group college minor project for laboratory management. It brings laboratory equipment, stock requests, borrowing and maintenance into one role-based web application. Administrators review requests and manage access, faculty request equipment and report issues, and technicians handle repairs and returns.
 
 The application keeps inventory movements and decisions traceable, provides role-specific dashboards and notifications, and exports reports for record keeping. The interface supports desktop, tablet and mobile screens.
 
@@ -111,4 +111,4 @@ The sibling documentation, college-materials and visuals folders belong to the l
 
 Password recovery is administrator-assisted. Email delivery, disconnected offline synchronization and automatic demo resets are not configured. Historical SQL migration and concurrency/load testing remain outside the completed scope.
 
-Mayur Bohra built the original college minor project independently. The later modernization used coding-assistant support. The interface styling was informed by the supplied community dashboard reference; current product content and branding follow the project's requirements. The bundled Mulish font retains its SIL Open Font License in `static/fonts/OFL.txt`. No application license has been selected.
+LIDMS was developed as a group college minor project. The later modernization used coding-assistant support. The interface styling was informed by the supplied community dashboard reference; current product content and branding follow the project's requirements. The bundled Mulish font retains its SIL Open Font License in `static/fonts/OFL.txt`. No application license has been selected.
