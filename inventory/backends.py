@@ -7,8 +7,13 @@ class EmailOrUsernameBackend(ModelBackend):
 
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username and "@" in username:
-            matches = get_user_model().objects.filter(email__iexact=username.strip())
-            if matches.count() != 1:
+            # Two matches are enough to reject ambiguous email addresses.
+            matches = list(
+                get_user_model()
+                .objects.filter(email__iexact=username.strip())
+                .values_list("username", flat=True)[:2]
+            )
+            if len(matches) != 1:
                 return None
-            username = matches.get().username
+            username = matches[0]
         return super().authenticate(request, username=username, password=password, **kwargs)

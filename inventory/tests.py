@@ -10,6 +10,7 @@ from django.db.models import Sum
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
+from .backends import EmailOrUsernameBackend
 from .models import (
     Activity,
     Complaint,
@@ -21,6 +22,7 @@ from .models import (
     StockRequest,
 )
 from .services import adjust_stock, return_stock, review_request
+from .views import scoped_complaints, scoped_requests
 
 User = get_user_model()
 PASSWORD = "Local-tests-only-73!WmQ"
@@ -148,6 +150,27 @@ class DemoLoginTests(TestCase):
     STORAGES={"staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}}
 )
 class WorkflowTests(TestCase):
+    def test_email_login_uses_bounded_lookup_and_preserves_ambiguity_rejection(self):
+        backend = EmailOrUsernameBackend()
+        with self.assertNumQueries(2):
+            user = backend.authenticate(None, username="FACULTY@example.test", password=PASSWORD)
+        self.assertEqual(user.pk, self.faculty.pk)
+        User.objects.create_user(
+            username="duplicate-email", email=self.faculty.email, password=PASSWORD
+        )
+        with self.assertNumQueries(1):
+            self.assertIsNone(
+                backend.authenticate(None, username=self.faculty.email, password=PASSWORD)
+            )
+
+    def test_scoped_lists_load_profile_fields_without_per_row_queries(self):
+        requests = scoped_requests(self.admin)
+        complaints = scoped_complaints(self.admin)
+        with self.assertNumQueries(1):
+            self.assertEqual([row.requester.profile.role for row in requests], ["faculty"])
+        with self.assertNumQueries(1):
+            self.assertEqual([row.reporter.profile.role for row in complaints], ["faculty"])
+
     def test_technician_progress_counts_assigned_jobs_not_all_self_reported_issues(self):
         Complaint.objects.create(
             reporter=self.technician,

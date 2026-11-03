@@ -47,9 +47,11 @@ def check_balances(using="default"):
             raise CommandError(
                 f"Stock history does not match available quantity: {item.asset_code}."
             )
-    requests = apps.get_model("inventory.StockRequest").objects.using(using)
+    requests = (
+        apps.get_model("inventory.StockRequest").objects.using(using).prefetch_related("movements")
+    )
     for request in requests.filter(item__isnull=False, status="approved"):
-        movements = list(request.movements.using(using).values_list("delta", flat=True))
+        movements = [movement.delta for movement in request.movements.all()]
         if (
             sum(n for n in movements if n < 0) != -request.quantity
             or sum(n for n in movements if n > 0) != request.quantity_returned
@@ -66,7 +68,15 @@ def export_workspace(path, using="default"):
         rows = []
         counts = {}
         for model in workspace_models():
+            # Natural foreign keys otherwise fetch the same account once per record.
+            natural_relations = [
+                field.name
+                for field in model._meta.fields
+                if field.many_to_one and hasattr(field.remote_field.model, "natural_key")
+            ]
             objects = model.objects.using(using).order_by("pk")
+            if natural_relations:
+                objects = objects.select_related(*natural_relations)
             serialized = json.loads(
                 serializers.serialize("json", objects, use_natural_foreign_keys=True)
             )

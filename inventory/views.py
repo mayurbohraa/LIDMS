@@ -13,6 +13,7 @@ from django.db import transaction
 from django.db.models import Case, Count, F, IntegerField, Q, Sum, Value, When
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
@@ -146,7 +147,9 @@ def register(request):
 
 
 def scoped_requests(user):
-    queryset = StockRequest.objects.select_related("requester", "item", "reviewed_by")
+    queryset = StockRequest.objects.select_related(
+        "requester", "requester__profile", "item", "reviewed_by"
+    )
     return queryset if role_for(user) == "admin" else queryset.filter(requester=user)
 
 
@@ -232,7 +235,9 @@ def contact(request):
 
 
 def scoped_complaints(user):
-    queryset = Complaint.objects.select_related("reporter", "assigned_to", "item")
+    queryset = Complaint.objects.select_related(
+        "reporter", "reporter__profile", "assigned_to", "item"
+    )
     role = role_for(user)
     if role == "admin":
         return queryset
@@ -355,8 +360,6 @@ def dashboard(request):
         ]
         intro = "Request equipment, follow your complaints and track your lab work."
         queue_title = "Your recent stock requests"
-    from django.urls import reverse
-
     metrics = [
         {"label": title, "value": count, "url": reverse(route) + query, "hint": hint}
         for title, count, route, query, hint in metric_specs
@@ -575,9 +578,9 @@ def request_review(request, pk):
 def request_detail(request, pk):
     queryset = scoped_requests(request.user)
     if role_for(request.user) == "technician":
-        queryset = StockRequest.objects.select_related("item", "requester", "reviewed_by").filter(
-            Q(requester=request.user) | Q(status="approved", item__isnull=False)
-        )
+        queryset = StockRequest.objects.select_related(
+            "item", "requester", "requester__profile", "reviewed_by"
+        ).filter(Q(requester=request.user) | Q(status="approved", item__isnull=False))
     stock_request = get_object_or_404(queryset, pk=pk)
     return render(
         request,

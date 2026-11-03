@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PREVIEWS = ROOT / "test-results" / "screenshots"
+PREVIEWS = ROOT.parent / "LIDMS_Visuals" / "verification"
 RESULTS = ROOT / "test-results"
 BASE_URL = "http://127.0.0.1:8001"
 ADMIN_NAV = [
@@ -130,8 +130,6 @@ def verify_role_workflow(browser, password, checks):
 
 
 def verify_browser():
-    load_dotenv(ROOT / ".env.local")
-    os.environ["LIDMS_ENV_FILE"] = str(ROOT / ".env.local")
     password = os.environ["LIDMS_DEMO_PASSWORD"]
     PREVIEWS.mkdir(parents=True, exist_ok=True)
     RESULTS.mkdir(exist_ok=True)
@@ -410,7 +408,9 @@ def verify_browser():
 
 def main():
     sys.path.insert(0, str(ROOT))
-    load_dotenv(ROOT / ".env.local")
+    # Select SQLite before Django loads settings; never run workflows against shared Neon.
+    os.environ["LIDMS_ENV_FILE"] = str(ROOT / ".env.local")
+    load_dotenv(ROOT / ".env.local", override=True)
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "lidms.settings")
     from django.conf import settings
     from django.core.servers.basehttp import WSGIRequestHandler, WSGIServer

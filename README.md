@@ -2,70 +2,63 @@
 
 **Lab Information Digitalization and Management Systems**
 
-[Live Demo](https://lidms.vercel.app/) | [GitHub Repository](https://github.com/mayurbohraa/LIDMS)
+[Live Website](https://lidms.vercel.app/)
 
-## Overview
+## About
 
-LIDMS is a web application for managing a college laboratory's equipment, stock requests and maintenance in one place. It connects faculty who need equipment, administrators who review requests, and technicians who maintain the lab. Each role has its own dashboard and access to the records and actions relevant to its work.
+LIDMS is a college minor project designed and developed independently by Mayur Bohra. It brings laboratory equipment, stock requests, borrowing and maintenance into one role-based web application. Administrators review requests and manage access, faculty request equipment and report issues, and technicians handle repairs and returns.
 
-The application tracks equipment from available stock through approval, issue and return. It also records hardware/software complaints, technician assignments and repair resolutions. Notifications and reports help users follow progress without relying on separate spreadsheets or manual follow-ups.
-
-## Highlights
-
-- Connected workflows across three roles, with server-side permission checks.
-- Traceable stock movements, partial returns and safeguards against invalid quantities.
-- Responsive pages for desktop, tablet and mobile.
-- A working public demo with sample records and credentials available on the login page.
+The application keeps inventory movements and decisions traceable, provides role-specific dashboards and notifications, and exports reports for record keeping. The interface supports desktop, tablet and mobile screens.
 
 ## Key features
 
-- **Inventory:** equipment records, categories, laboratory locations, stock adjustments, low-stock indicators and archiving.
-- **Equipment requests:** requests for existing items or new equipment, administrator decisions and recorded decision notes.
-- **Issues and returns:** borrower records, outstanding quantities, partial/full returns and movement history.
-- **Maintenance:** hardware/software complaints, priorities, technician assignments, progress and resolution notes.
-- **Dashboards and notifications:** role-specific counts, work queues, activity history and read/unread updates linked to their records.
-- **Reports:** inventory and complaint views, plus permission-scoped inventory, request and complaint CSV exports.
-- **Accounts:** administrator registration/approval, role management, editable profiles and password changes.
+- Equipment records, categories, lab locations, stock adjustments and low-stock indicators.
+- Requests for existing or new equipment, administrator approval and decision notes.
+- Borrower tracking, partial/full returns and stock-movement history.
+- Hardware/software complaints, technician assignments, priorities and resolution notes.
+- Role-specific dashboards, activity history and read/unread notifications.
+- Inventory, request and complaint CSV exports with permission checks.
+- Account approval, role management, profiles and password changes.
 
-## User roles
+To explore the fictional sample data, open the live website and select **Demo account credentials** on the login page. The sample accounts share editable records.
 
-| Role | Responsibilities |
-| --- | --- |
-| Administrator | Manage accounts and inventory, decide requests, assign complaints and review reports. |
-| Faculty | Request equipment, report issues and track their own requests, complaints and borrowed items. |
-| Technician | Handle assigned repairs, adjust stock and record equipment returns. |
-
-To try a role, open the live demo, go to Login and select **Demo account credentials**. The demo contains fictional shared records; visitor actions can change them.
-
-## Technology
+## Tech stack
 
 | Layer | Technology |
 | --- | --- |
 | Backend | Python 3.14, Django 5.2 |
 | Interface | Django templates, HTML, CSS and JavaScript |
-| Database | Neon PostgreSQL; SQLite for standalone local setup and tests |
+| Database | Neon PostgreSQL; SQLite for standalone development and isolated tests |
 | Hosting | Vercel |
-| Verification | Django tests, Ruff and Playwright |
+| Checks | Django tests, Ruff and Playwright |
 
-## Setup and run locally
+## Prerequisites
 
-Install Python 3.14 and Git. For a fresh checkout, run these commands in PowerShell:
+Python 3.14, Git and the project source are required. A Neon connection is optional for standalone local use; it is required to use the existing shared database. The commands below use Windows PowerShell. On macOS/Linux, replace `.venv\Scripts\python.exe` with `.venv/bin/python`.
+
+## Installation and environment setup
+
+From the application directory (`LIDMS_Code` in this workspace; the repository root in a fresh checkout):
 
 ```powershell
-git clone https://github.com/mayurbohraa/LIDMS.git
-cd LIDMS
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 Copy-Item .env.example .env.local
 ```
 
-Set `DJANGO_SECRET_KEY` in `.env.local`. You can generate a value with:
+These are fresh-setup steps; keep existing configured environment files. Generate a signing key and set it as `DJANGO_SECRET_KEY` in `.env.local`:
 
 ```powershell
 .\.venv\Scripts\python.exe -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-Leave `DATABASE_URL` blank for a standalone SQLite setup, then initialize and start the app:
+Leave `DATABASE_URL` blank for a standalone SQLite database. To connect Neon, copy `.env.neon.example` to `.env.neon` and set its pooled `DATABASE_URL` and direct `DATABASE_URL_UNPOOLED` for the same database. Normal startup reads these URLs automatically. Private environment files are excluded from Git.
+
+This workspace's localhost app and deployed app share Neon. Changes affect the same records and require internet access. The initial data transfer is complete: do not import or seed the populated shared database again.
+
+## Run, build and test
+
+For a new empty database, initialize the tables and create an administrator. For an already configured workspace, start the server directly:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py migrate
@@ -73,50 +66,49 @@ Leave `DATABASE_URL` blank for a standalone SQLite setup, then initialize and st
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/`. On macOS/Linux, use `.venv/bin/python` instead of the Windows executable path. For an empty local demo database, `manage.py seed_demo` adds sample accounts and workflows and prompts for their password.
+Open `http://127.0.0.1:8000/`. For an empty local demonstration database, `manage.py seed_demo` creates sample scenarios and prompts for a password. It preserves existing account passwords and workflow changes.
 
-### Connect to Neon
+Django renders the interface directly; there is no frontend bundle step. Collect production static assets with:
 
-Copy `.env.neon.example` to `.env.neon`. Fill in `DATABASE_URL` with the pooled URL and `DATABASE_URL_UNPOOLED` with the direct URL for the same database. Normal local startup reads these connections automatically.
+```powershell
+.\.venv\Scripts\python.exe manage.py --env-file .env.local collectstatic --noinput
+```
 
-The configured project uses the same Neon database for localhost and the live app. Changes through either app affect the same records and require internet access. Its initial data transfer is complete: **do not reimport or seed the existing shared database**. Do not overwrite configured environment files when following fresh-checkout instructions.
-
-Keep `.env.local`, `.env.neon` and other private environment files out of Git. Public `.example` files document the available settings without credentials.
-
-## Deploy on Vercel
-
-1. Import the GitHub repository, choose the **Django** preset and set Root Directory to `./`.
-2. Connect Neon PostgreSQL and confirm `DATABASE_URL` is available in the deployment environment.
-3. Configure the settings shown in `.env.vercel.example`, including a private `DJANGO_SECRET_KEY` and `DJANGO_DEBUG=false`. Enable demo settings only for fictional sample installations.
-4. For a new database, apply migrations through its direct connection before using the app. The current shared database is already initialized.
-5. Deploy and verify login, permissions, requests, repairs, returns and reports. Vercel collects static files automatically.
-
-Future pushes deploy code; they do not replace database records. Apply schema migrations deliberately when the models change.
-
-## Development checks
-
-Keep `.env.local` configured for SQLite when running isolated tests:
+Keep `.env.local` configured for SQLite when running tests, so they do not access the shared live database:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\ruff.exe check .
+.\.venv\Scripts\ruff.exe format --check .
 .\.venv\Scripts\python.exe manage.py --env-file .env.local test --noinput
+.\.venv\Scripts\python.exe tools/verify_ui.py
 ```
 
-The latest verification passed 64 automated tests. Browser checks covered role handoffs, responsive layouts, demo controls, reports and access restrictions. `tools/verify_ui.py` runs browser workflows against an isolated SQLite snapshot and saves output under ignored `test-results/`.
+The browser verifier uses a temporary SQLite snapshot. Screenshots are saved outside Git in the sibling `LIDMS_Visuals/verification` directory; logs remain in ignored `test-results/`.
+
+## Deployment
+
+Use the Django preset in Vercel with Root Directory `./`. Connect Neon PostgreSQL and configure the settings in `.env.vercel.example`, including a private signing key and `DJANGO_DEBUG=false`. The Neon integration supplies `DATABASE_URL`; Vercel collects static assets automatically. Apply schema migrations deliberately when models change. Deploying code does not replace database records.
 
 ## Project structure
 
-- `inventory/` - models, workflows, permissions, migrations, management commands and tests.
-- `lidms/` - settings, environment loading, routes and application entrypoints.
-- `templates/` - public, login and workspace pages.
-- `static/` - styles, scripts, fonts, icons, robot branding and dashboard images.
-- `tools/` - browser verification.
+```text
+LIDMS/
+|-- LIDMS_Code/             # Git repository root and application
+|   |-- inventory/          # Models, workflows, permissions, migrations and tests
+|   |-- lidms/              # Environment loading, settings, routes and entrypoints
+|   |-- templates/          # Public, authentication and workspace pages
+|   |-- static/             # Styles, scripts, fonts, icons and branding
+|   `-- tools/              # Browser verification
+|-- LIDMS_Docs/             # PROJECT_DETAILS.md and CASE_STUDY.md only
+|-- LIDMS_College_Documents/ # Private college documents and assessment material
+`-- LIDMS_Visuals/           # Private review screenshots and visual references
+```
 
-Academic material, the case study and detailed project documentation remain in the sibling `Documentation` folder, outside Git. Secrets, database files, backups and test outputs are excluded from the repository.
+The sibling documentation, college-materials and visuals folders belong to the local workspace and are not included in the public repository. Secrets, database files, backups and test outputs are also excluded.
 
-## Current limitations
+## Notes and credits
 
-Password recovery is administrator-assisted. External email delivery, disconnected offline synchronization and automatic demo resets are not configured. Historical SQL-data migration and concurrency/load testing remain outside the completed scope.
+Password recovery is administrator-assisted. Email delivery, disconnected offline synchronization and automatic demo resets are not configured. Historical SQL migration and concurrency/load testing remain outside the completed scope.
 
-No application license has been selected. The bundled Mulish font retains its SIL Open Font License in `static/fonts/OFL.txt`.
+Mayur Bohra built the original college minor project independently. The later modernization used coding-assistant support. The interface styling was informed by the supplied community dashboard reference; current product content and branding follow the project's requirements. The bundled Mulish font retains its SIL Open Font License in `static/fonts/OFL.txt`. No application license has been selected.
