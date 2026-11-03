@@ -1,44 +1,44 @@
 # LIDMS
 
-**Lab Information Digitalization and Management Systems**
-
-[Live Website](https://lidms.vercel.app/)
-
 ## About
 
-LIDMS is a group college minor project for laboratory management. It brings laboratory equipment, stock requests, borrowing and maintenance into one role-based web application. Administrators review requests and manage access, faculty request equipment and report issues, and technicians handle repairs and returns.
-
-The application keeps inventory movements and decisions traceable, provides role-specific dashboards and notifications, and exports reports for record keeping. The interface supports desktop, tablet and mobile screens.
+**Lab Information Digitalization and Management Systems (LIDMS)** is a group college minor project for managing laboratory equipment, stock requests and maintenance. It connects administrators, faculty and technicians through role-based dashboards, approval workflows and shared records.
 
 ## Key Features
 
-- Equipment records, categories, lab locations, stock adjustments and low-stock indicators.
-- Requests for existing or new equipment, administrator approval and decision notes.
-- Borrower tracking, partial/full returns and stock-movement history.
-- Hardware/software complaints, technician assignments, priorities and resolution notes.
-- Role-specific dashboards, activity history and read/unread notifications.
-- Inventory, request and complaint CSV exports with permission checks.
+- Equipment inventory, stock adjustments and low-stock tracking.
+- Equipment requests, approvals, issues and partial/full returns.
+- Hardware/software complaints, technician assignments and repair tracking.
+- Role-based dashboards, activity history and notifications.
+- Inventory, request and complaint CSV reports.
 - Account approval, role management, profiles and password changes.
+- Responsive pages for desktop, tablet and mobile.
 
-To explore the fictional sample data, open the live website and select **Demo account credentials** on the login page. The sample accounts share editable records.
+## Live Website
+
+[Open LIDMS](https://lidms.vercel.app/)
+
+Select **Demo account credentials** on the login page to explore the three roles using sample data.
 
 ## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
 | Backend | Python 3.14, Django 5.2 |
-| Interface | Django templates, HTML, CSS and JavaScript |
-| Database | Neon PostgreSQL; SQLite for standalone development and isolated tests |
+| Frontend | Django templates, HTML, CSS, JavaScript |
+| Database | Neon PostgreSQL; SQLite for local development and tests |
 | Hosting | Vercel |
-| Checks | Django tests, Ruff and Playwright |
+| Testing | Django tests, Ruff, Playwright |
 
 ## Prerequisites
 
-Use Python 3.14 (the configured deployment version), Git and the project source. A Neon connection is optional for standalone local use; it is required to use the existing shared database. The commands below use Windows PowerShell. On macOS/Linux, replace `.venv\Scripts\python.exe` with `.venv/bin/python`.
+- Python 3.14 and the project source.
+- Neon connection details when using PostgreSQL.
+- Windows PowerShell for the commands below. On macOS/Linux, use `.venv/bin/python` instead of `.venv\Scripts\python.exe`.
 
 ## Installation & Environment Setup
 
-From the application directory (`LIDMS_Code` in this workspace; the repository root in a fresh checkout):
+Run from the repository root (`LIDMS_Code` in the local project folder):
 
 ```powershell
 python -m venv .venv
@@ -46,75 +46,66 @@ python -m venv .venv
 Copy-Item .env.example .env.local
 ```
 
-Run the copy command only for a fresh setup; keep existing configured environment files. Generate a signing key and set it as `DJANGO_SECRET_KEY` in `.env.local`:
+For a fresh setup, generate a key and save it as `DJANGO_SECRET_KEY` in `.env.local`. Keep existing environment files when the project is already configured.
 
 ```powershell
 .\.venv\Scripts\python.exe -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-Leave `DATABASE_URL` blank for a standalone SQLite database. To connect Neon, copy `.env.neon.example` to `.env.neon` and set its pooled `DATABASE_URL` and direct `DATABASE_URL_UNPOOLED` for the same database. Normal startup reads these URLs automatically. Private environment files are excluded from Git.
+Leave `DATABASE_URL` blank for SQLite. To use Neon, copy `.env.neon.example` to `.env.neon` and fill in its pooled and direct connection URLs. Keep environment files private.
 
-This workspace's localhost app and deployed app share Neon. Changes affect the same records and require internet access. The initial data transfer is complete: do not import or seed the populated shared database again.
+The configured local app and live website share Neon records. Local changes therefore affect the live data; do not seed or reimport the existing shared database.
 
-## Local Run, Build & Tests
+## Local Run, Build & Test Commands
 
-For a new empty database, initialize the tables and create an administrator:
+Initialize a new database and create an administrator:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py migrate
 .\.venv\Scripts\python.exe manage.py createsuperuser
 ```
 
-Start the application (also the only step needed for the configured workspace):
+Start the application:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/`. For an empty local demonstration database, `manage.py seed_demo` creates sample scenarios and prompts for a password. To show the login-page credentials dialog locally, set `LIDMS_SHOW_DEMO_ACCOUNTS=true` and `LIDMS_DEMO_PASSWORD` to that same password in the private local environment file. Existing account passwords and workflow changes are preserved.
+Open `http://127.0.0.1:8000/`.
 
-Django renders the interface directly; there is no frontend bundle step. Collect production static assets with:
+Collect static files for deployment:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py --env-file .env.local collectstatic --noinput
 ```
 
-Keep `.env.local` configured for SQLite when running tests, so they do not access the shared live database:
+Run checks with `.env.local` configured for SQLite:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\ruff.exe check .
 .\.venv\Scripts\ruff.exe format --check .
 .\.venv\Scripts\python.exe manage.py --env-file .env.local test --noinput
-.\.venv\Scripts\python.exe tools/verify_ui.py
 ```
-
-The browser verifier needs the Chrome executable configured in `tools/verify_ui.py`, an existing local SQLite sample database and its `LIDMS_DEMO_PASSWORD` in `.env.local`. It uses a temporary SQLite snapshot. Screenshots and logs are saved in ignored `test-results/`; `LIDMS_Visuals` is reserved for future project visuals.
-
-## Deployment
-
-Use the Django preset in Vercel with Root Directory `./`. Connect Neon PostgreSQL and configure the settings in `.env.vercel.example`, including a private signing key and `DJANGO_DEBUG=false`. The Neon integration supplies `DATABASE_URL`; Vercel collects static assets automatically. Apply schema migrations deliberately when models change. Deploying code does not replace database records.
 
 ## Project Structure
 
 ```text
 LIDMS/
-|-- LIDMS_Code/             # Git repository root and application
-|   |-- inventory/          # Models, workflows, permissions, migrations and tests
-|   |-- lidms/              # Environment loading, settings, routes and entrypoints
-|   |-- templates/          # Public, authentication and workspace pages
-|   |-- static/             # Styles, scripts, fonts, icons and branding
+|-- LIDMS_Code/             # Application and public README
+|   |-- inventory/          # Models, workflows, permissions and tests
+|   |-- lidms/              # Settings, routes and entrypoints
+|   |-- templates/          # Page templates
+|   |-- static/             # Styles, scripts and runtime assets
 |   `-- tools/              # Browser verification
-|-- LIDMS_Docs/             # PROJECT_DETAILS.md and CASE_STUDY.md only
-|-- LIDMS_College_Documents/ # Private college documents and assessment material
-|-- LIDMS_Assets/           # Branding files and logo candidates
-`-- LIDMS_Visuals/           # Reserved for future project visuals
+|-- LIDMS_Docs/             # PROJECT_DETAILS.md and CASE_STUDY.md
+|-- LIDMS_College_Documents/ # College reports and supporting material
+|-- LIDMS_Assets/           # Branding library and logo candidates
+`-- LIDMS_Visuals/           # Reserved for future visuals
 ```
 
-The sibling documentation, college-materials, assets and visuals folders belong to the local workspace and are not included in the public repository. Secrets, database files, backups and test outputs are also excluded.
+Only `LIDMS_Code` is the Git repository. Private documents, assets, environment files and database backups are not published.
 
-## Notes & Credits
+## Acknowledgements & Credits
 
-Password recovery is administrator-assisted. Email delivery, disconnected offline synchronization and automatic demo resets are not configured. Historical SQL migration and concurrency/load testing remain outside the completed scope.
-
-LIDMS was developed as a group college minor project. The later modernization used coding-assistant support. The interface styling was informed by the supplied community dashboard reference; current product content and branding follow the project's requirements. The bundled Mulish font retains its SIL Open Font License in `static/fonts/OFL.txt`. No application license has been selected.
+The bundled Mulish font is distributed under the SIL Open Font License, included in `static/fonts/OFL.txt`.
