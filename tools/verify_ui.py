@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PREVIEWS = ROOT.parent / "LIDMS_Visuals" / "verification"
+PREVIEWS = ROOT / "test-results" / "verification"
 RESULTS = ROOT / "test-results"
 BASE_URL = "http://127.0.0.1:8001"
 ADMIN_NAV = [

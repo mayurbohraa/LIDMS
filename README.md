@@ -10,7 +10,7 @@ LIDMS is a group college minor project for laboratory management. It brings labo
 
 The application keeps inventory movements and decisions traceable, provides role-specific dashboards and notifications, and exports reports for record keeping. The interface supports desktop, tablet and mobile screens.
 
-## Key features
+## Key Features
 
 - Equipment records, categories, lab locations, stock adjustments and low-stock indicators.
 - Requests for existing or new equipment, administrator approval and decision notes.
@@ -22,7 +22,7 @@ The application keeps inventory movements and decisions traceable, provides role
 
 To explore the fictional sample data, open the live website and select **Demo account credentials** on the login page. The sample accounts share editable records.
 
-## Tech stack
+## Tech Stack
 
 | Layer | Technology |
 | --- | --- |
@@ -34,9 +34,9 @@ To explore the fictional sample data, open the live website and select **Demo ac
 
 ## Prerequisites
 
-Python 3.14, Git and the project source are required. A Neon connection is optional for standalone local use; it is required to use the existing shared database. The commands below use Windows PowerShell. On macOS/Linux, replace `.venv\Scripts\python.exe` with `.venv/bin/python`.
+Use Python 3.14 (the configured deployment version), Git and the project source. A Neon connection is optional for standalone local use; it is required to use the existing shared database. The commands below use Windows PowerShell. On macOS/Linux, replace `.venv\Scripts\python.exe` with `.venv/bin/python`.
 
-## Installation and environment setup
+## Installation & Environment Setup
 
 From the application directory (`LIDMS_Code` in this workspace; the repository root in a fresh checkout):
 
@@ -46,7 +46,7 @@ python -m venv .venv
 Copy-Item .env.example .env.local
 ```
 
-These are fresh-setup steps; keep existing configured environment files. Generate a signing key and set it as `DJANGO_SECRET_KEY` in `.env.local`:
+Run the copy command only for a fresh setup; keep existing configured environment files. Generate a signing key and set it as `DJANGO_SECRET_KEY` in `.env.local`:
 
 ```powershell
 .\.venv\Scripts\python.exe -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
@@ -56,17 +56,22 @@ Leave `DATABASE_URL` blank for a standalone SQLite database. To connect Neon, co
 
 This workspace's localhost app and deployed app share Neon. Changes affect the same records and require internet access. The initial data transfer is complete: do not import or seed the populated shared database again.
 
-## Run, build and test
+## Local Run, Build & Tests
 
-For a new empty database, initialize the tables and create an administrator. For an already configured workspace, start the server directly:
+For a new empty database, initialize the tables and create an administrator:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py migrate
 .\.venv\Scripts\python.exe manage.py createsuperuser
+```
+
+Start the application (also the only step needed for the configured workspace):
+
+```powershell
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/`. For an empty local demonstration database, `manage.py seed_demo` creates sample scenarios and prompts for a password. It preserves existing account passwords and workflow changes.
+Open `http://127.0.0.1:8000/`. For an empty local demonstration database, `manage.py seed_demo` creates sample scenarios and prompts for a password. To show the login-page credentials dialog locally, set `LIDMS_SHOW_DEMO_ACCOUNTS=true` and `LIDMS_DEMO_PASSWORD` to that same password in the private local environment file. Existing account passwords and workflow changes are preserved.
 
 Django renders the interface directly; there is no frontend bundle step. Collect production static assets with:
 
@@ -84,13 +89,13 @@ Keep `.env.local` configured for SQLite when running tests, so they do not acces
 .\.venv\Scripts\python.exe tools/verify_ui.py
 ```
 
-The browser verifier uses a temporary SQLite snapshot. Screenshots are saved outside Git in the sibling `LIDMS_Visuals/verification` directory; logs remain in ignored `test-results/`.
+The browser verifier needs the Chrome executable configured in `tools/verify_ui.py`, an existing local SQLite sample database and its `LIDMS_DEMO_PASSWORD` in `.env.local`. It uses a temporary SQLite snapshot. Screenshots and logs are saved in ignored `test-results/`; `LIDMS_Visuals` is reserved for future project visuals.
 
 ## Deployment
 
 Use the Django preset in Vercel with Root Directory `./`. Connect Neon PostgreSQL and configure the settings in `.env.vercel.example`, including a private signing key and `DJANGO_DEBUG=false`. The Neon integration supplies `DATABASE_URL`; Vercel collects static assets automatically. Apply schema migrations deliberately when models change. Deploying code does not replace database records.
 
-## Project structure
+## Project Structure
 
 ```text
 LIDMS/
@@ -102,12 +107,13 @@ LIDMS/
 |   `-- tools/              # Browser verification
 |-- LIDMS_Docs/             # PROJECT_DETAILS.md and CASE_STUDY.md only
 |-- LIDMS_College_Documents/ # Private college documents and assessment material
-`-- LIDMS_Visuals/           # Private review screenshots and visual references
+|-- LIDMS_Assets/           # Branding files and logo candidates
+`-- LIDMS_Visuals/           # Reserved for future project visuals
 ```
 
-The sibling documentation, college-materials and visuals folders belong to the local workspace and are not included in the public repository. Secrets, database files, backups and test outputs are also excluded.
+The sibling documentation, college-materials, assets and visuals folders belong to the local workspace and are not included in the public repository. Secrets, database files, backups and test outputs are also excluded.
 
-## Notes and credits
+## Notes & Credits
 
 Password recovery is administrator-assisted. Email delivery, disconnected offline synchronization and automatic demo resets are not configured. Historical SQL migration and concurrency/load testing remain outside the completed scope.
 
