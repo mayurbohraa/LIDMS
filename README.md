@@ -1,104 +1,107 @@
 # LIDMS
 
-## About
+## Project Overview
 
-**Lab Information Digitalization and Management Systems** is a college minor project for managing lab equipment, requests and repairs. Administrators, faculty and technicians have separate access based on their responsibilities.
+LIDMS (Lab Information Digitalization and Management Systems) manages laboratory equipment, stock requests, issued items, returns, and repairs. Administrators, faculty, and technicians use permission-aware workspaces, notifications, and reports to follow each operation.
+
+## Project Preview
+
+<img src="static/project/project-preview.webp" alt="LIDMS application screens and visual identity" width="520">
+
+Application screens and visual identity. Branding mockups are presentation concepts.
 
 ## Key Features
 
-- Equipment inventory and stock tracking.
-- Equipment requests, approvals and returns.
-- Complaint reporting and repair assignments.
-- Role-based dashboards and notifications.
-- User management and CSV reports.
+- Equipment inventory, stock adjustments, and movement history.
+- Equipment requests, approval decisions, issued items, and partial or complete returns.
+- Complaint reporting, technician assignment, and repair tracking.
+- Role-based dashboards, account administration, profiles, and notifications.
+- Report filtering, CSV exports, and workspace transfer commands.
 
-## Live Website
+## Live Website & Related Repository
 
-[Open LIDMS](https://lidms.vercel.app/)
-
-Demo credentials are available on the login page.
-
-## Source Repository
-
-[View source on GitHub](https://github.com/mayurbohraa/lidms)
+https://lidms.vercel.app/
 
 ## Tech Stack
 
-Python 3.14, Django 5.2, HTML, CSS, JavaScript, Neon PostgreSQL and Vercel. SQLite is supported for local development.
+- **Application:** Python, Django 5.2, Django templates, HTML, CSS, JavaScript.
+- **Database:** PostgreSQL with psycopg; SQLite for local development.
+- **Hosting and tools:** WhiteNoise, python-dotenv, Vercel configuration, Ruff, Playwright.
 
 ## Prerequisites
 
-- Python 3.14.
-- Project source code.
-- PowerShell for the commands below.
+Python 3.12–3.14 as declared in `pyproject.toml`, pip, and PowerShell for the commands below. Python 3.14 is the configured development target. PostgreSQL is required for the hosted deployment.
 
-## Installation & Environment Setup
+## Installation & Setup
 
-1. Open the repository root (`LIDMS_Code`) in a terminal.
-
-2. Create a virtual environment and install dependencies:
+1. Open the repository root and create a virtual environment:
 
    ```powershell
    python -m venv .venv
+   ```
+
+2. Install dependencies:
+
+   ```powershell
    .\.venv\Scripts\python.exe -m pip install -r requirements.txt
    ```
 
-3. Create the local settings file for a fresh setup:
-
-   ```powershell
-   Copy-Item .env.example .env.local
-   ```
-
-4. Generate a key and paste it into `.env.local` as `DJANGO_SECRET_KEY`:
+3. For a fresh setup, copy `.env.example` to `.env.local`. Generate a key and save it privately as `DJANGO_SECRET_KEY`:
 
    ```powershell
    .\.venv\Scripts\python.exe -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
    ```
 
-5. Leave `DATABASE_URL` blank to use SQLite. For Neon, copy `.env.neon.example` to `.env.neon` and enter the pooled and direct database URLs. Keep environment files private.
-
-6. For a new database, create the tables and an administrator:
+4. Leave `DATABASE_URL` blank for SQLite. Select `.env.local` explicitly in the commands below: without `--env-file`, an existing `.env.neon` can connect to the shared hosted database.
+5. On a new local database, create tables and an administrator:
 
    ```powershell
-   .\.venv\Scripts\python.exe manage.py migrate
-   .\.venv\Scripts\python.exe manage.py createsuperuser
+   .\.venv\Scripts\python.exe manage.py --env-file .env.local migrate
    ```
 
-Keep existing environment files and accounts when using an already configured workspace. Connecting to the shared Neon database makes local changes visible on the live app.
+   ```powershell
+   .\.venv\Scripts\python.exe manage.py --env-file .env.local createsuperuser
+   ```
 
-## Local Run, Build & Test Commands
+## Running Locally
 
-Start the app, then open `http://127.0.0.1:8000/`:
+Development at `http://127.0.0.1:8000/`:
 
 ```powershell
-.\.venv\Scripts\python.exe manage.py runserver
+.\.venv\Scripts\python.exe manage.py --env-file .env.local runserver
 ```
 
-Collect static files:
+Collect deployment static assets:
 
 ```powershell
 .\.venv\Scripts\python.exe manage.py --env-file .env.local collectstatic --noinput
 ```
 
-Install test dependencies and run tests with `.env.local` configured for SQLite:
+Production uses `lidms.wsgi:application`, with PostgreSQL, debug disabled, and private deployment settings. `runserver` is for development; no standalone production-start command is bundled.
+
+Install check tools and run the test suite against a SQLite-configured local environment:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+```
+
+```powershell
 .\.venv\Scripts\python.exe manage.py --env-file .env.local test --noinput
 ```
 
 ## Project Structure
 
 ```text
-LIDMS_Code/
-|-- inventory/      # Models, workflows, permissions and tests
-|-- lidms/          # Settings and routes
-|-- templates/      # Page templates
-|-- static/         # Styles, scripts and images
-|-- tools/          # Browser checks
-`-- manage.py
+inventory/            # Models, forms, workflows, permissions, and tests
+lidms/                # Settings, environment loader, URLs, and WSGI
+templates/            # Public pages and authenticated workspace
+static/               # Styles, scripts, fonts, and images
+tools/                # Browser verification tools
+manage.py             # Management commands and environment selection
+pyproject.toml        # Runtime requirements and lint configuration
+vercel.json           # Django hosting configuration
 ```
 
 ## Acknowledgements & Credits
 
-Mulish font: SIL Open Font License, included in `static/fonts/OFL.txt`.
+Mulish is distributed under the SIL Open Font License; its notice is included in `static/fonts/OFL.txt`.
