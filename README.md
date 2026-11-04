@@ -18,6 +18,10 @@
 
 Demo credentials are available on the login page.
 
+## Source Repository
+
+[View source on GitHub](https://github.com/mayurbohraa/lidms)
+
 ## Tech Stack
 
 Python 3.14, Django 5.2, HTML, CSS, JavaScript, Neon PostgreSQL and Vercel. SQLite is supported for local development.
