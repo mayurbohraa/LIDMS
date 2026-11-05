@@ -102,13 +102,6 @@ pyproject.toml        # Runtime requirements and lint configuration
 vercel.json           # Django hosting configuration
 ```
 
-## My Contributions
-
-- Planned and developed the complete application, including the frontend and backend.
-- Designed the user interface and project logo.
-- Managed implementation from planning through deployment.
-- Deployed the application on Vercel.
-
 ## Acknowledgements & Credits
 
 Mulish is distributed under the SIL Open Font License; its notice is included in `static/fonts/OFL.txt`.
