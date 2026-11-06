@@ -1,14 +1,14 @@
 # LIDMS
 
-## Project Overview
+## Overview
 
 LIDMS (Lab Information Digitalization and Management Systems) manages laboratory equipment, stock requests, issued items, returns, and repairs. Administrators, faculty, and technicians use permission-aware workspaces, notifications, and reports to follow each operation.
 
 ## Project Preview
 
-<img src="static/project/project-preview.webp" alt="LIDMS application screens and visual identity" width="520">
+<img src="static/project/project-preview.webp" alt="LIDMS application screens and visual identity" width="100%">
 
-Application screens and visual identity. Branding mockups are presentation concepts.
+Application preview.
 
 ## Key Features
 
